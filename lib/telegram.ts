@@ -27,7 +27,7 @@ async function telegramApi<T>(
     });
   } catch {
     throw new Error(
-      "Telegram API is not reachable from this computer. Check internet, firewall, VPN, or proxy and try again."
+      "Telegram API is not reachable from this server. Try redeploying, changing the server region, or using another hosting provider."
     );
   }
 

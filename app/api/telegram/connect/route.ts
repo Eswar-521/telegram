@@ -3,6 +3,8 @@ import { readCrmData, sanitizeCrmDataForClient, writeCrmData } from "@/lib/data"
 import { getTelegramMe, setTelegramWebhook } from "@/lib/telegram";
 
 export const runtime = "nodejs";
+export const preferredRegion = "iad1";
+export const maxDuration = 60;
 
 type ConnectAction = {
   action?: "test" | "webhook";

@@ -5,6 +5,8 @@ import { sendTelegramMessage } from "@/lib/telegram";
 import type { Contact, CrmData, MessageDeliveryStatus, MessageTargetType } from "@/lib/types";
 
 export const runtime = "nodejs";
+export const preferredRegion = "iad1";
+export const maxDuration = 60;
 
 type GroupDeliveryMode = "auto" | "group_chat" | "members";
 
