@@ -83,8 +83,24 @@ export async function readCrmData(): Promise<CrmData> {
 }
 
 export async function writeCrmData(data: CrmData) {
+  const nextData: CrmData = {
+    ...data,
+    telegram: {
+      ...data.telegram,
+      botToken: process.env.TELEGRAM_BOT_TOKEN ?? data.telegram.botToken,
+      botUsername: process.env.TELEGRAM_BOT_USERNAME ?? data.telegram.botUsername,
+      businessTelegramId:
+        process.env.TELEGRAM_ADMIN_CHAT_ID ?? data.telegram.businessTelegramId,
+      publicBaseUrl: process.env.APP_URL ?? data.telegram.publicBaseUrl
+    },
+    deviceAccount: {
+      ...data.deviceAccount,
+      apiKey: process.env.CRM_DEVICE_API_KEY ?? data.deviceAccount.apiKey
+    }
+  };
+
   await fs.mkdir(dataDir, { recursive: true });
-  await fs.writeFile(dataPath, `${JSON.stringify(data, null, 2)}\n`, "utf8");
+  await fs.writeFile(dataPath, `${JSON.stringify(nextData, null, 2)}\n`, "utf8");
 }
 
 export function sanitizeCrmDataForClient(data: CrmData): CrmData {
@@ -106,18 +122,30 @@ export function sanitizeCrmDataForClient(data: CrmData): CrmData {
 export function mergeClientCrmData(existing: CrmData, incoming: CrmData): CrmData {
   const incomingToken = incoming.telegram?.botToken?.trim();
   const incomingApiKey = incoming.deviceAccount?.apiKey?.trim();
+  const envToken = process.env.TELEGRAM_BOT_TOKEN?.trim();
+  const envApiKey = process.env.CRM_DEVICE_API_KEY?.trim();
 
   return {
     business: { ...existing.business, ...incoming.business },
     telegram: {
       ...existing.telegram,
       ...incoming.telegram,
-      botToken: incomingToken || existing.telegram.botToken
+      botToken: envToken || incomingToken || existing.telegram.botToken,
+      botUsername:
+        process.env.TELEGRAM_BOT_USERNAME ??
+        incoming.telegram?.botUsername ??
+        existing.telegram.botUsername,
+      businessTelegramId:
+        process.env.TELEGRAM_ADMIN_CHAT_ID ??
+        incoming.telegram?.businessTelegramId ??
+        existing.telegram.businessTelegramId,
+      publicBaseUrl:
+        process.env.APP_URL ?? incoming.telegram?.publicBaseUrl ?? existing.telegram.publicBaseUrl
     },
     deviceAccount: {
       ...existing.deviceAccount,
       ...incoming.deviceAccount,
-      apiKey: incomingApiKey || existing.deviceAccount.apiKey
+      apiKey: envApiKey || incomingApiKey || existing.deviceAccount.apiKey
     },
     contacts: incoming.contacts ?? existing.contacts,
     groups: incoming.groups ?? existing.groups,
