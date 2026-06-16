@@ -2,7 +2,9 @@ import { promises as fs } from "fs";
 import path from "path";
 import type { CrmData } from "@/lib/types";
 
-const dataDir = path.join(process.cwd(), "data");
+const dataDir = process.env.VERCEL
+  ? path.join("/tmp", "tinitiate-crm-telegram")
+  : path.join(process.cwd(), "data");
 const dataPath = path.join(dataDir, "crm.json");
 
 export function createInitialCrmData(): CrmData {

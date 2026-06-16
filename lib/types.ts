@@ -22,6 +22,7 @@ export type TelegramConfig = {
   connected: boolean;
   hasBotToken?: boolean;
   lastVerifiedAt?: string;
+  lastUpdateId?: number;
 };
 
 export type DeviceAccountConfig = {
@@ -96,6 +97,7 @@ export type ChatMessage = {
   deliveryStatus?: MessageDeliveryStatus;
   sentCount?: number;
   failedCount?: number;
+  telegramUpdateId?: number;
   createdAt: string;
 };
 
